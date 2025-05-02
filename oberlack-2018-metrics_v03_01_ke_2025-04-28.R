@@ -14,7 +14,7 @@
 #
 # KE, Apr 25
 
-working_directory <- 'C:/Data/HU-Box/2_Publications/044_AtSelPaper/Submission-1/DataPack'
+working_directory <- 'INSERT'
 setwd(working_directory)
 input_file <- 'oberlack-2018-usedcodes.csv'
 
@@ -89,12 +89,15 @@ cov_paper <- apply(conceptlist$extents(), MARGIN=2,
 # Join all metrics into one data frame and save it
 
 # to add info on intents
-get_att_string <- function(x) capture.output(x$sub(1)$get_intent()$print())
+get_att_string <- function(x, max_chars = 80) {
+  out <- capture.output(x$sub(1)$get_intent()$print())
+  oneline <- paste(out, collapse = " ")
+  oneline <- gsub("\\s+", " ", oneline)
+  substr(oneline, 1, max_chars)
+}
 intent_strings <- sapply(seq(1, n_concepts),
                 FUN = function(i) {get_att_string(conceptlist[i])}) %>%
   unlist()
-# manually remove last entries, uncritical dirt from get_att_string():
-intent_strings <- intent_strings[1:n_concepts]
 
 metrics <- data.frame(intent=intent_strings, 
                       richness=richness, size=size,
